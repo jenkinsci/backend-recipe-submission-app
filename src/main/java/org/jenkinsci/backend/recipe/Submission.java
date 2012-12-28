@@ -4,7 +4,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
@@ -20,13 +22,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 /**
  * @author Kohsuke Kawaguchi
  */
 public class Submission {
     public final Application app;
-    private String payload;
+    private Document dom;
     public final OpenIdSession openId;
 
     public Submission(Application app) throws OpenIDException, IOException {
@@ -44,9 +47,12 @@ public class Submission {
      * This initiates the protocol. It firsts accepts a submission.
      */
     @RequirePOST
-    public void doStart(StaplerRequest req, StaplerResponse rsp) throws IOException, SAXException, ParserConfigurationException {
+    public void doStart(StaplerRequest req, StaplerResponse rsp) throws IOException, SAXException, ParserConfigurationException, DocumentException {
         // first receive the submission so long as it's not too big
-        payload = req.getParameter("payload");
+        String payload = req.getParameter("payload");
+
+        // get some information out of this
+        dom = new SAXReader().read(new StringReader(payload));
 
         rsp.setStatus(rsp.SC_SEE_OTHER);
         rsp.setHeader("Location","confirm");
@@ -55,16 +61,28 @@ public class Submission {
     public HttpResponse doSubmit() throws DocumentException, IOException, GitAPIException, InterruptedException {
         OpenIDIdentity a = openId.authenticate();
 
-        a.getNick();
-        a.getEmail();
+        // set the author
+        Element author = dom.getRootElement().element("author");
+        if (author==null)
+            dom.getRootElement().addElement("author");
+        author.setText(getFullName(a));
 
-        // get some information out of this
-        Document dom = new SAXReader().read(new StringReader(payload));
+        StringWriter sw = new StringWriter();
+        new XMLWriter(sw).write(dom);
 
-        app.gitClient.upload(a,a.getNick(),payload);
-        payload = null;
+        app.gitClient.upload(a,a.getNick(),sw.toString());
+        dom = null;
 
         return HttpResponses.redirectTo("done");
+    }
+
+    private String getFullName(OpenIDIdentity a) {
+        String fullName;
+        if (a.getLastName()!=null && a.getFirstName()!=null)
+            fullName = a.getFirstName()+' '+a.getLastName();
+        else
+            fullName = a.getNick();
+        return fullName;
     }
 
 }
