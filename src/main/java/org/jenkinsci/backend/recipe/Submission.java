@@ -21,7 +21,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import static javax.servlet.http.HttpServletResponse.*;
+
 /**
+ * Session-scoped object that handles the recipe file submission from users.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class Submission {
@@ -32,10 +36,12 @@ public class Submission {
     public Submission(Application app) throws OpenIDException, IOException {
         this.app = app;
 
-        this.openId = new
-                OpenIdSession(app.manager,"https://jenkins-ci.org/account/openid/","/openId");
+        this.openId = new OpenIdSession(app.manager,"https://jenkins-ci.org/account/openid/","/openId");
     }
 
+    /**
+     * Once authenticated, return the user's jenkins-ci.org account ID.
+     */
     public String getNick() {
         return openId.authenticate().getNick();
     }
@@ -51,8 +57,7 @@ public class Submission {
         // get some information out of this
         dom = new SAXReader().read(new StringReader(payload));
 
-        rsp.setStatus(rsp.SC_SEE_OTHER);
-        rsp.setHeader("Location","confirm");
+        rsp.sendRedirect(SC_SEE_OTHER, "confirm");
     }
 
     public HttpResponse doSubmit() throws DocumentException, IOException, GitAPIException, InterruptedException {
