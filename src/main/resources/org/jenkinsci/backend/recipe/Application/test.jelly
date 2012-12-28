@@ -1,0 +1,11 @@
+<j:jelly xmlns:j="jelly:core" xmlns:t="/org/jenkinsci/backend/taglib/layout">
+  <t:layout title="Submit recipe">
+    <h1>Your recipe submission</h1>
+
+    <form method="post" action="start">
+      <input type="text" name="payload" value="&lt;foo/&gt;"/>
+
+      <input type="submit" style="margin-top:2em; display:block" autofocus="true"/>
+    </form>
+  </t:layout>
+</j:jelly>

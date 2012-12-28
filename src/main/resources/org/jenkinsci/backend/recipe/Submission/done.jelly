@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core" xmlns:t="/org/jenkinsci/backend/taglib/layout">
+  <t:layout title="Thanks!">
+    <h1>Thanks, ${it.nick}!</h1>
+
+    <p>
+      Your recipe was successfully submitted. Please allow us 1 day before it becomes visible in the update center.
+    </p>
+  </t:layout>
+</j:jelly>
