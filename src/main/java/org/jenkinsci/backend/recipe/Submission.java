@@ -1,10 +1,6 @@
 package org.jenkinsci.backend.recipe;
 
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
@@ -18,8 +14,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -30,7 +24,7 @@ import static javax.servlet.http.HttpServletResponse.*;
  */
 public class Submission {
     public final Application app;
-    private Document dom;
+    private Recipe recipe;
     public final OpenIdSession openId;
 
     public Submission(Application app) throws OpenIDException, IOException {
@@ -55,7 +49,11 @@ public class Submission {
         String payload = req.getParameter("payload");
 
         // get some information out of this
-        dom = new SAXReader().read(new StringReader(payload));
+        recipe = new Recipe(payload);
+
+//        String title = recipe.getRootElement().elementText("title");
+//        String description = recipe.getRootElement().elementText("description");
+//        String version = recipe.getRootElement().elementText("version");
 
         rsp.sendRedirect(SC_SEE_OTHER, "confirm");
     }
@@ -64,16 +62,10 @@ public class Submission {
         OpenIDIdentity a = openId.authenticate();
 
         // set the author
-        Element author = dom.getRootElement().element("author");
-        if (author==null)
-            dom.getRootElement().addElement("author");
-        author.setText(getFullName(a));
+        recipe.setAuthor(getFullName(a));
 
-        StringWriter sw = new StringWriter();
-        new XMLWriter(sw).write(dom);
-
-        app.gitClient.upload(a,a.getNick(),sw.toString());
-        dom = null;
+        app.gitClient.upload(a, a.getNick(), recipe.toString());
+        recipe = null;
 
         return HttpResponses.redirectTo("done");
     }
