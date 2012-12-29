@@ -21,8 +21,11 @@
     </d:taglib>
 
     <form method="post" action="submit" xmlns:local="local">
-      <local:row title="Title:">
-        ${it.recipe.title}
+      <local:row title="ID:">
+        ${it.recipe.id}
+      </local:row>
+      <local:row title="Display Name:">
+        ${it.recipe.displayName}
       </local:row>
       <local:row title="Version:">
         ${it.recipe.version}

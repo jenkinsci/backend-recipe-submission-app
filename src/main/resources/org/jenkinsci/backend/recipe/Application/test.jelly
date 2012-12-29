@@ -5,7 +5,8 @@
     <form method="post" action="start">
       <textarea name="payload" style="width:100%; height:10em"><![CDATA[<recipe plugin="recipe@1.0-SNAPSHOT">
           <version>1.0</version>
-          <title>foo</title>
+          <id>foo</id>
+          <title>This is the foo recipe</title>
           <description>Hello</description>
           <ingredients>
             <job>

@@ -64,7 +64,7 @@ public class Submission {
         // set the author
         recipe.setAuthor(getFullName(a));
 
-        app.gitClient.upload(a, a.getNick(), recipe.toString());
+        app.gitClient.upload(a, recipe.getFileName(), recipe.toString());
         recipe = null;
 
         return HttpResponses.redirectTo("done");

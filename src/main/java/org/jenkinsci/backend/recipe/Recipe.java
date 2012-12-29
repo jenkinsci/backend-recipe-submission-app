@@ -29,8 +29,12 @@ public class Recipe {
         return dom.getRootElement().elementText(name);
     }
 
-    public String getTitle() {
-        return getProperty("title");
+    public String getId() {
+        return getProperty("id");
+    }
+
+    public String getDisplayName() {
+        return getProperty("displayName");
     }
 
     public String getDescription() {
@@ -61,5 +65,9 @@ public class Recipe {
         } catch (IOException e) {
             throw new Error(e);
         }
+    }
+
+    public String getFileName() {
+        return getId()+".jrcp";
     }
 }
