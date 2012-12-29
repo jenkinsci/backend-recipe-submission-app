@@ -7,6 +7,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -23,6 +24,10 @@ public class Recipe {
 
     public Recipe(String payload) throws DocumentException {
         this(new SAXReader().read(new StringReader(payload)));
+    }
+
+    public Recipe(File payload) throws DocumentException {
+        this(new SAXReader().read(payload));
     }
 
     public String getProperty(String name) {

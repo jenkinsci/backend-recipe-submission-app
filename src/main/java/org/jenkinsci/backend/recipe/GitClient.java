@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 public class GitClient {
     private final Git git;
-    private final File ws;
+    public final File ws;
 
     public GitClient(Git git, File ws) {
         this.git = git;

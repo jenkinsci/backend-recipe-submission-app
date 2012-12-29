@@ -13,7 +13,10 @@ import org.openid4java.OpenIDException;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -24,8 +27,16 @@ import static javax.servlet.http.HttpServletResponse.*;
  */
 public class Submission {
     public final Application app;
-    private Recipe recipe;
     public final OpenIdSession openId;
+
+    /**
+     * The recipe being submitted.
+     */
+    private Recipe recipe;
+    /**
+     * The existing recipe of the same ID, if that exists.
+     */
+    private Recipe existing;
 
     public Submission(Application app) throws OpenIDException, IOException {
         this.app = app;
@@ -55,6 +66,15 @@ public class Submission {
         // get some information out of this
         recipe = new Recipe(payload);
 
+        File existing = new File(app.gitClient.ws,recipe.getFileName());
+        if (existing.exists())
+            try {
+                this.existing = new Recipe(existing);
+            } catch (DocumentException e) {
+                // if the existing recipe cannot be loaded, ignore
+                LOGGER.log(Level.WARNING, "Failed to load "+existing,e);
+            }
+
         rsp.sendRedirect(SC_SEE_OTHER, "confirm");
     }
 
@@ -79,4 +99,5 @@ public class Submission {
         return fullName;
     }
 
+    private static final Logger LOGGER = Logger.getLogger(Submission.class.getName());
 }
