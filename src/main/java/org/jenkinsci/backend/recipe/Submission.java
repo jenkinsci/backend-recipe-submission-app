@@ -12,9 +12,11 @@ import org.kohsuke.stapler.openid.client.OpenIdSession;
 import org.openid4java.OpenIDException;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,7 +27,7 @@ import static javax.servlet.http.HttpServletResponse.*;
  *
  * @author Kohsuke Kawaguchi
  */
-public class Submission {
+public class Submission implements Serializable {
     public final Application app;
     public final OpenIdSession openId;
 
@@ -79,7 +81,7 @@ public class Submission {
                 this.existing = new Recipe(existing);
             } catch (DocumentException e) {
                 // if the existing recipe cannot be loaded, ignore
-                LOGGER.log(Level.WARNING, "Failed to load "+existing,e);
+                LOGGER.log(Level.WARNING, "Failed to load " + existing, e);
             }
 
         rsp.sendRedirect(SC_SEE_OTHER, "confirm");

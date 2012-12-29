@@ -34,7 +34,7 @@ public class Application implements StaplerFallback {
 
     public final AdjunctManager adjuncts;
 
-    /*package*/ final AttributeKey<Submission> submission = AttributeKey.sessionScoped();
+    /*package*/ final AttributeKey<FakeSerializable<Submission>> submission = AttributeKey.sessionScoped();
 
     public Application(ServletContext context, Parameters params) throws IOException, ConsumerException {
         this.context = context;
@@ -80,10 +80,10 @@ public class Application implements StaplerFallback {
 
     public Submission getStaplerFallback() {
         try {
-            Submission v = submission.get();
-            if (v==null)
-                submission.set(v=new Submission(this));
-            return v;
+            FakeSerializable<Submission> v = submission.get();
+            if (v==null || v.value==null)
+                submission.set(v=new FakeSerializable<Submission>(new Submission(this)));
+            return v.value;
         } catch (OpenIDException e) {
             throw new Error(e);
         } catch (IOException e) {
