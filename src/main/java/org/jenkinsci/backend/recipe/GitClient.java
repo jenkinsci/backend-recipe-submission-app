@@ -1,12 +1,16 @@
 package org.jenkinsci.backend.recipe;
 
+import com.jcraft.jsch.Session;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig.Host;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteRefUpdate;
+import org.eclipse.jgit.transport.SshSessionFactory;
 import org.kohsuke.stapler.openid.client.OpenIDIdentity;
 
 import java.io.File;
@@ -23,10 +27,21 @@ import java.io.IOException;
 public class GitClient {
     private final Git git;
     public final File ws;
+    private final Parameters params;
 
-    public GitClient(Git git, File ws) {
+    public GitClient(Git git, Parameters params) {
         this.git = git;
-        this.ws = ws;
+        this.params = params;
+        this.ws = params.ws();
+
+        // AFAICT jgit doesn't offer easy way to set our own Transport per command,
+        // so our only option is to set the VM-wide default session factory.
+        SshSessionFactory.setInstance(new SshSessionFactoryImpl(params,new JschConfigSessionFactory() {
+            @Override
+            protected void configure(Host hc, Session session) {
+                // nothing
+            }
+        }));
     }
 
     /**

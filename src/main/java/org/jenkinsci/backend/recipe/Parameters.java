@@ -20,4 +20,18 @@ public interface Parameters {
 
     @Configuration(defaultValue="inbound")
     String branch();
+
+    /**
+     * Passphrase for SSH private key to push into the recipe repository.
+     */
+    String passphrase();
+
+    /**
+     * SSH private key. null to use the one baked in this app.
+     */
+    File privateKey();
+    /**
+     * SSH public key.  null to use the one baked in this app.
+     */
+    File publicKey();
 }

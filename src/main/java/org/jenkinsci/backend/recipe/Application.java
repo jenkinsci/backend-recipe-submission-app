@@ -36,7 +36,7 @@ public class Application implements StaplerFallback {
         this.context = context;
         this.params = params;
         this.git = checkOutRepository();
-        this.gitClient = new GitClient(git,params.ws());
+        this.gitClient = new GitClient(git,params);
         this.adjuncts = new AdjunctManager(context,getClass().getClassLoader(),"adjuncts");
 
         manager = new ConsumerManager();
