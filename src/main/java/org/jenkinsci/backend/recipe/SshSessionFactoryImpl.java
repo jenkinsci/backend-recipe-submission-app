@@ -2,6 +2,7 @@ package org.jenkinsci.backend.recipe;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -45,7 +46,11 @@ public class SshSessionFactoryImpl extends SshSessionFactory {
                 jsch.setHostKeyRepository(new NoCheckHostKeyRepository());
                 jsch.addIdentity(privateKey.getAbsolutePath(), publicKey.getAbsolutePath(),
                         params.passphrase().getBytes());
-                return new JschSession(jsch.getSession("git", "github.com"), uri);
+
+                Session session = jsch.getSession("git", "github.com");
+                session.connect(tms);
+
+                return new JschSession(session, uri);
             } catch (IOException e) {
                 throw new TransportException(uri, "Failed to connect", e);
             } catch (JSchException e) {
