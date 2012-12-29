@@ -1,5 +1,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:t="/org/jenkinsci/backend/taglib/layout">
   <t:layout title="Thanks!">
+    <link rel="stylesheet" type="text/css" href="app.css"/>
     <h1>Thanks, ${it.nick}!</h1>
 
     <p>

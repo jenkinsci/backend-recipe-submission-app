@@ -48,7 +48,7 @@ public class Recipe {
     public void setAuthor(String author) {
         Element a = dom.getRootElement().element("author");
         if (a==null)
-            dom.getRootElement().addElement("author");
+            a = dom.getRootElement().addElement("author");
         a.setText(author);
     }
 

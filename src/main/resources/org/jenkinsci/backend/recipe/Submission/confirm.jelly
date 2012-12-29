@@ -1,13 +1,38 @@
-<j:jelly xmlns:j="jelly:core" xmlns:t="/org/jenkinsci/backend/taglib/layout">
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:d="jelly:define" xmlns:j="jelly:core" xmlns:t="/org/jenkinsci/backend/taglib/layout" xmlns:st="jelly:stapler">
   <t:layout title="Submit recipe">
+    <link rel="stylesheet" type="text/css" href="app.css"/>
     <h1>Your recipe submission</h1>
 
     <p>
-            OK?
+      You are submitting the following recipe. Please verify that you are willing to make this
+      recipe available publicly and share this with the Jenkins community as a whole.
     </p>
 
-    <form method="post" action="submit">
-      <input type="submit" style="margin-top:2em; display:block" autofocus="true"/>
+    <d:taglib uri="local">
+      <d:tag name="row">
+        <div class="control-group">
+          <label class="control-label">${attrs.title}</label>
+          <div class="controls">
+            <d:invokeBody/>
+          </div>
+        </div>
+      </d:tag>
+    </d:taglib>
+
+    <form method="post" action="submit" xmlns:local="local">
+      <local:row title="Title:">
+        ${it.recipe.title}
+      </local:row>
+      <local:row title="Version:">
+        ${it.recipe.version}
+      </local:row>
+      <local:row title="Description:">
+        ${it.recipe.description}
+      </local:row>
+      <local:row>
+        <input type="submit" style="margin-top:2em; display:block" autofocus="true"/>
+      </local:row>
     </form>
   </t:layout>
 </j:jelly>

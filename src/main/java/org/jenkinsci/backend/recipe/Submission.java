@@ -40,6 +40,10 @@ public class Submission {
         return openId.authenticate().getNick();
     }
 
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
     /**
      * This initiates the protocol. It firsts accepts a submission.
      */
@@ -50,10 +54,6 @@ public class Submission {
 
         // get some information out of this
         recipe = new Recipe(payload);
-
-//        String title = recipe.getRootElement().elementText("title");
-//        String description = recipe.getRootElement().elementText("description");
-//        String version = recipe.getRootElement().elementText("version");
 
         rsp.sendRedirect(SC_SEE_OTHER, "confirm");
     }

@@ -1,0 +1,16 @@
+#content {
+  font-size: 1.3em !important;
+}
+
+.control-group {
+  clear: both;
+  margin: 10px 0;
+}
+.control-group .controls {
+  margin-left: 200px;
+}
+.control-group .control-label {
+  float: left;
+  width: 190px;
+  text-align: right;
+}

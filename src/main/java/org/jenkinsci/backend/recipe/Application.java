@@ -7,6 +7,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.kohsuke.stapler.AttributeKey;
 import org.kohsuke.stapler.StaplerFallback;
+import org.kohsuke.stapler.framework.adjunct.AdjunctManager;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
@@ -27,6 +28,8 @@ public class Application implements StaplerFallback {
     public final ConsumerManager manager;
     public final GitClient gitClient;
 
+    public final AdjunctManager adjuncts;
+
     /*package*/ final AttributeKey<Submission> submission = AttributeKey.sessionScoped();
 
     public Application(ServletContext context, Parameters params) throws IOException, ConsumerException {
@@ -34,6 +37,7 @@ public class Application implements StaplerFallback {
         this.params = params;
         this.git = checkOutRepository();
         this.gitClient = new GitClient(git,params.ws());
+        this.adjuncts = new AdjunctManager(context,getClass().getClassLoader(),"adjuncts");
 
         manager = new ConsumerManager();
         manager.setAssociations(new InMemoryConsumerAssociationStore());

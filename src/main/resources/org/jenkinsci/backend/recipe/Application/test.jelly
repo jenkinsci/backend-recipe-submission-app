@@ -3,7 +3,40 @@
     <h1>Your recipe submission</h1>
 
     <form method="post" action="start">
-      <input type="text" name="payload" value="&lt;foo/&gt;"/>
+      <textarea name="payload" style="width:100%; height:10em"><![CDATA[<recipe plugin="recipe@1.0-SNAPSHOT">
+          <version>1.0</version>
+          <title>foo</title>
+          <description>Hello</description>
+          <ingredients>
+            <job>
+              <name>ci</name>
+              <description></description>
+              <definition>
+                <project>
+                  <actions/>
+                  <description></description>
+                  <keepDependencies>false</keepDependencies>
+                  <properties/>
+                  <scm class="hudson.scm.NullSCM"/>
+                  <canRoam>true</canRoam>
+                  <disabled>false</disabled>
+                  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+                  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+                  <triggers class="vector"/>
+                  <concurrentBuild>false</concurrentBuild>
+                  <builders>
+                    <hudson.tasks.Shell>
+                      <command>echo hello</command>
+                    </hudson.tasks.Shell>
+                  </builders>
+                  <publishers/>
+                  <buildWrappers/>
+                </project>
+              </definition>
+            </job>
+          </ingredients>
+        </recipe>
+      ]]></textarea>
 
       <input type="submit" style="margin-top:2em; display:block" autofocus="true"/>
     </form>
