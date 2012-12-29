@@ -1,10 +1,14 @@
 package org.jenkinsci.backend.recipe;
 
+import com.jcraft.jsch.Session;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig.Host;
+import org.eclipse.jgit.transport.SshSessionFactory;
 import org.kohsuke.stapler.AttributeKey;
 import org.kohsuke.stapler.StaplerFallback;
 import org.kohsuke.stapler.framework.adjunct.AdjunctManager;
@@ -35,6 +39,16 @@ public class Application implements StaplerFallback {
     public Application(ServletContext context, Parameters params) throws IOException, ConsumerException {
         this.context = context;
         this.params = params;
+
+        // AFAICT jgit doesn't offer easy way to set our own Transport per command,
+        // so our only option is to set the VM-wide default session factory.
+        SshSessionFactory.setInstance(new SshSessionFactoryImpl(params, new JschConfigSessionFactory() {
+            @Override
+            protected void configure(Host hc, Session session) {
+                // nothing
+            }
+        }));
+
         this.git = checkOutRepository();
         this.gitClient = new GitClient(git,params);
         this.adjuncts = new AdjunctManager(context,getClass().getClassLoader(),"adjuncts");
