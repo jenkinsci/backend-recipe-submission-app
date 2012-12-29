@@ -56,6 +56,13 @@ public class Submission {
     }
 
     /**
+     * There's no top page for this app, for now.
+     */
+    public HttpResponse doIndex() {
+        return HttpResponses.redirectTo("http://jenkins-ci.org/");
+    }
+
+    /**
      * This initiates the protocol. It firsts accepts a submission.
      */
     @RequirePOST
